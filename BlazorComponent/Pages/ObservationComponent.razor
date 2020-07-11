@@ -1,13 +1,13 @@
 ﻿@page "/Obs"
 
-<EditForm class="form-group" Model="@newObs" OnValidSubmit="AddObs">
+<EditForm class="form-group" Model="@obs">
     <button id="b1" type="button" class="btn btn-info" data-toggle="collapse" data-target="#g@(obs.GrpId)">@obs.GrpText</button>
     <div id="g@(obs.GrpId)" class="collapse">
         <div class="panel panel-success  col-sm-*">
             <div class="panel-body">
                 @foreach (ObservationModel o in obs.observations)
-                    {
-                        string id = obs.GrpId +""+o.ObsId;//@obs.ObsText.Substring(0, 1) + "" + @obs.ObsText.Substring(2, 1);
+                {
+                    string id = obs.GrpId + "" + o.ObsId;
                     <div>
                         <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
                         <div class="custom-control custom-radio custom-control-inline">
@@ -24,14 +24,9 @@
             </div>
         </div>
     </div>
-
 </EditForm>
+
 @code {
-
-    //public List<ObservationModel> obsList = new List<ObservationModel>();
-    private ObservationModel newObs = new ObservationModel();
-    private List<ResponseModel> respList = new List<ResponseModel>();
-
 
     [Parameter]
     public ObservationViewModel obs { get; set; }
@@ -42,24 +37,13 @@
     [Parameter]
     public EventCallback<List<ResponseModel>> respChanged { get; set; }
 
-    async Task Updateresp()
-    {
-        await respChanged.InvokeAsync(respList);
-    }
-
-    private void AddObs()
-    {
-        //obsList.Add(newObs);
-        //newObs = new ObservationModel();
-    }
-
-    private async void SetObsValue(int obsid, int val)
+    private void SetObsValue(int obsid, int val)
     {
         resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
-        await respChanged.InvokeAsync(resp);
+        //await respChanged.InvokeAsync(resp);
     }
 
-    private void SetObsComment(ChangeEventArgs e, int grpid,int obsid)
+    private void SetObsComment(ChangeEventArgs e, int grpid, int obsid)
     {
         resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
     }

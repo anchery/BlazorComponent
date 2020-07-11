@@ -19,27 +19,15 @@ else
             <button class="btn btn-primary" type="submit">Submit</button>
         </div>
     </EditForm>
-
-    @*<Observation @bind-value="@grp1" GrpId="g1" GrpText="Personal Protective Equipment" Observations="grp1"></Observation>
-      <Observation GrpId="g2" GrpText="Tools & Equipment" Observations="grp2"></Observation>*@
 }
 
 
 @code {
     private List<ObservationGroupModel> ObsGroups;
     private List<ObservationModel> obsItems;
-    public List<ObservationViewModel> ObsList=new List<ObservationViewModel>();
+    public List<ObservationViewModel> ObsList = new List<ObservationViewModel>();
     private ObservationModel newObs = new ObservationModel();
     private List<ResponseModel> resp = new List<ResponseModel>();
-    private List<ResponseModel> data = new List<ResponseModel>();
-
-    [Parameter]
-    public EventCallback<List<ResponseModel>> respChanged { get; set; }
-
-    async Task Updateresp()
-    {
-        await respChanged.InvokeAsync(resp);
-    }
 
     //Load meta_obs
     protected override async Task OnInitializedAsync()
@@ -68,20 +56,7 @@ else
     {
         foreach (ResponseModel item in resp)
         {
-            Console.WriteLine(item.GrpId +"-"+item.ObsId+"-"+item.Response);
+            Console.WriteLine(item.GrpId + "-" + item.ObsId + "-" + item.Response + "-" + item.Comment);
         }
     }
-
-
-    //    private List<ObservationModel> grp1 = new List<ObservationModel>()
-    //{
-    //        new ObservationModel {ObsText = "1.1 Hearing Protection"},
-    //        new ObservationModel {ObsText = "1.2 Hand Protection" }
-    //    };
-
-    //    private List<ObservationModel> grp2 = new List<ObservationModel>()
-    //{
-    //        new ObservationModel {ObsText = "2.1 Hearing Protection"},
-    //        new ObservationModel {ObsText = "2.2 Hand Protection" }
-    //    };
 }
