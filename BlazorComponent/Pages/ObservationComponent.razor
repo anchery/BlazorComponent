@@ -11,14 +11,14 @@
                     <div>
                         <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="@(id)s" name="radioGroup@(id)" @onclick="@(e => SetObsValue(Convert.ToInt16(@id),0))">
+                            <input type="radio" class="custom-control-input" id="@(id)s" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,0))">
                             <label class="custom-control-label" for="@(id)s">Safe</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="@(id)r" name="radioGroup@(id)" @onclick="@(e => SetObsValue(Convert.ToInt16(@id),1))">
+                            <input type="radio" class="custom-control-input" id="@(id)r" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,1))">
                             <label class="custom-control-label" for="@(id)r">At-Risk</label>
                         </div>
-                        <input type="text" class="form-control" placeholder="comments" @onchange="@(e=>SetObsComment(e,11))" />
+                        <input type="text" class="form-control" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
                     </div>
                 }
             </div>
@@ -28,26 +28,39 @@
 </EditForm>
 @code {
 
-    public List<ObservationModel> obsList = new List<ObservationModel>();
+    //public List<ObservationModel> obsList = new List<ObservationModel>();
     private ObservationModel newObs = new ObservationModel();
+    private List<ResponseModel> respList = new List<ResponseModel>();
+
 
     [Parameter]
     public ObservationViewModel obs { get; set; }
 
+    [Parameter]
+    public List<ResponseModel> resp { get; set; }
+
+    [Parameter]
+    public EventCallback<List<ResponseModel>> respChanged { get; set; }
+
+    async Task Updateresp()
+    {
+        await respChanged.InvokeAsync(respList);
+    }
+
     private void AddObs()
     {
-        obsList.Add(newObs);
-        newObs = new ObservationModel();
-    }
-    private void SetObsValue(int id, int val)
-    {
-
-        //observations.RemoveAll(e => e.ObsId == id);
-        //observations.Add(new Observation { ObsId = id, ObsVal = val, Comment = "" });
+        //obsList.Add(newObs);
+        //newObs = new ObservationModel();
     }
 
-    private void SetObsComment(ChangeEventArgs e, int id)
+    private async void SetObsValue(int obsid, int val)
     {
-        //observations.Find(e => e.ObsId == id).Comment = e.Value.ToString();
+        resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
+        await respChanged.InvokeAsync(resp);
+    }
+
+    private void SetObsComment(ChangeEventArgs e, int grpid,int obsid)
+    {
+        resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
     }
 }

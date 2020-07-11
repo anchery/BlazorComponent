@@ -21,4 +21,11 @@ namespace BlazorComponent.Data
         public string GrpText { get; set; }
         public List<ObservationModel> observations { get; set; }
     }
+    public class ResponseModel
+    {
+        public int GrpId { get; set; }
+        public int ObsId { get; set; }
+        public int Response { get; set; }
+        public string Comment { get; set; }
+    }
 }
