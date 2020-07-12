@@ -35,5 +35,12 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script>
+        function accessDOMElement(id) {
+            var txt;
+            txt = document.getElementById(id);
+            txt.disabled = "";
+        }
+    </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 ﻿@page "/Obs"
+@inject IJSRuntime jsRuntime
 
 <EditForm class="form-group" Model="@obs">
     <button id="b1" type="button" class="btn btn-info" data-toggle="collapse" data-target="#g@(obs.GrpId)">@obs.GrpText</button>
@@ -18,7 +19,7 @@
                             <input type="radio" class="custom-control-input" id="@(id)r" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,1))">
                             <label class="custom-control-label" for="@(id)r">At-Risk</label>
                         </div>
-                        <input type="text" class="form-control" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
+                        <input type="text" class="form-control" disabled="disabled" id="cmnt@(id)" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
                     </div>
                 }
             </div>
@@ -27,6 +28,7 @@
 </EditForm>
 
 @code {
+    private string state = "diabled";
 
     [Parameter]
     public ObservationViewModel obs { get; set; }
@@ -37,9 +39,11 @@
     [Parameter]
     public EventCallback<List<ResponseModel>> respChanged { get; set; }
 
-    private void SetObsValue(int obsid, int val)
+    private async void SetObsValue(int obsid, int val)
     {
         resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
+        string id = "cmnt" + obs.GrpId + obsid;
+        await jsRuntime.InvokeAsync<object>("accessDOMElement",id);
         //await respChanged.InvokeAsync(resp);
     }
 
@@ -47,4 +51,12 @@
     {
         resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
     }
+
+    //[Parameter] public bool state { get; set; } = false;
+
+    //public string SetButton()
+    //{
+    //    string result = state ? "" : "disabled";
+    //    return result;
+    //}
 }
