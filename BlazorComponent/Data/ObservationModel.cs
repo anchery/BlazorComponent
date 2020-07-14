@@ -28,4 +28,5 @@ namespace BlazorComponent.Data
         public int Response { get; set; }
         public string Comment { get; set; }
     }
+
 }

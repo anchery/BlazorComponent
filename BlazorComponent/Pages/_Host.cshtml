@@ -35,8 +35,10 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    
+    @* Custom JS *@
     <script>
-        function accessDOMElement(id) {
+        function ToggleComment(id) {
             var txt;
             txt = document.getElementById(id);
             txt.disabled = "";

@@ -22,6 +22,22 @@ namespace BlazorComponent.Data
             _config = config;
         }
 
+        public string GetData<T,U>(string sql, U parameters)
+        {
+            string connecitonString = _config.GetConnectionString(ConnectionStringName);
+            using (IDbConnection connection = new SqlConnection(connecitonString))
+            {
+                try
+                {
+                    var data = connection.Query<string>(sql, parameters);
+                    return data.First().ToString();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+        }
         public async Task<List<T>> LoadData<T, U>(string sql, U parameters)
         {
             string connecitonString = _config.GetConnectionString(ConnectionStringName);
@@ -77,6 +93,13 @@ namespace BlazorComponent.Data
                 sql = "Select ObsId,ObsText From Meta_Observations";
 
             return LoadData<ObservationModel, dynamic>(sql, new { });
+        }
+        public bool ValidateLogin(string username,string password)
+        {
+            string sql = "Select count(*) From Users where Username='" + username +"' and Password='"+password+"'";
+            string result = GetData<dynamic,dynamic>(sql, new { });
+            return result == "0" ? false : true;
+                
         }
     }
 }

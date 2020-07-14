@@ -43,7 +43,7 @@
     {
         resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
         string id = "cmnt" + obs.GrpId + obsid;
-        await jsRuntime.InvokeAsync<object>("accessDOMElement",id);
+        await jsRuntime.InvokeAsync<object>("ToggleComment",id);
         //await respChanged.InvokeAsync(resp);
     }
 
@@ -52,11 +52,4 @@
         resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
     }
 
-    //[Parameter] public bool state { get; set; } = false;
-
-    //public string SetButton()
-    //{
-    //    string result = state ? "" : "disabled";
-    //    return result;
-    //}
 }
