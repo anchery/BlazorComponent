@@ -42,11 +42,11 @@ namespace BlazorComponent
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddTransient<SqlDataAccess, SqlDataAccess>();
-
             services.AddHttpContextAccessor();
             services.AddScoped<HttpContextAccessor>();
             services.AddHttpClient();
             services.AddScoped<HttpClient>();
+            services.AddSingleton<AppState>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

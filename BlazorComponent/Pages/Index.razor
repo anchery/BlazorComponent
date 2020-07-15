@@ -34,6 +34,7 @@ else
     {
         try
         {
+            //Console.WriteLine(login.IsLoggedIn);
             ObsGroups = await _db.GetObservationGroups("");
             foreach (ObservationGroupModel grp in ObsGroups)
             {

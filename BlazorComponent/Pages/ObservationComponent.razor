@@ -1,55 +1,82 @@
 ﻿@page "/Obs"
 @inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject AppState AppState
 
-<EditForm class="form-group" Model="@obs">
-    <button id="b1" type="button" class="btn btn-info" data-toggle="collapse" data-target="#g@(obs.GrpId)">@obs.GrpText</button>
-    <div id="g@(obs.GrpId)" class="collapse">
-        <div class="panel panel-success  col-sm-*">
-            <div class="panel-body">
-                @foreach (ObservationModel o in obs.observations)
-                {
-                    string id = obs.GrpId + "" + o.ObsId;
-                    <div>
-                        <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="@(id)s" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,0))">
-                            <label class="custom-control-label" for="@(id)s">Safe</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="@(id)r" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,1))">
-                            <label class="custom-control-label" for="@(id)r">At-Risk</label>
-                        </div>
-                        <input type="text" class="form-control" disabled="disabled" id="cmnt@(id)" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
+    @if (@AppState.SelectedColour == "blue")
+    {
+        try
+        {
+            navigationManager.NavigateTo(navigationManager.BaseUri.Replace("observation", "") + "login");
+        }
+        catch (Exception e)
+        {
+
+            Console.WriteLine(e.Message);
+        }
+
+        //jsRuntime.InvokeAsync<object>(window.back());
+        //Console.WriteLine(navigationManager.Uri);
+    }
+    else
+    {
+        <EditForm class="form-group" Model="@obs">
+            <button id="b1" type="button" class="btn btn-info" data-toggle="collapse" data-target="#g@(obs.GrpId)">@obs.GrpText</button>
+            <div id="g@(obs.GrpId)" class="collapse">
+                <div class="panel panel-success  col-sm-*">
+                    <div class="panel-body">
+                        @foreach (ObservationModel o in obs.observations)
+                        {
+                            string id = obs.GrpId + "" + o.ObsId;
+                            <div>
+                                <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="@(id)s" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,0))">
+                                    <label class="custom-control-label" for="@(id)s">Safe</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="@(id)r" name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId,1))">
+                                    <label class="custom-control-label" for="@(id)r">At-Risk</label>
+                                </div>
+                                <input type="text" class="form-control" disabled="disabled" id="cmnt@(id)" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
+                            </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
-        </div>
-    </div>
-</EditForm>
-
-@code {
-    private string state = "diabled";
-
-    [Parameter]
-    public ObservationViewModel obs { get; set; }
-
-    [Parameter]
-    public List<ResponseModel> resp { get; set; }
-
-    [Parameter]
-    public EventCallback<List<ResponseModel>> respChanged { get; set; }
-
-    private async void SetObsValue(int obsid, int val)
-    {
-        resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
-        string id = "cmnt" + obs.GrpId + obsid;
-        await jsRuntime.InvokeAsync<object>("ToggleComment",id);
-        //await respChanged.InvokeAsync(resp);
+        </EditForm>
     }
+    @code {
+        private string state = "diabled";
 
-    private void SetObsComment(ChangeEventArgs e, int grpid, int obsid)
-    {
-        resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
+        [Parameter]
+        public ObservationViewModel obs { get; set; }
+
+        [Parameter]
+        public List<ResponseModel> resp { get; set; }
+
+        [Parameter]
+        public EventCallback<List<ResponseModel>> respChanged { get; set; }
+
+        [CascadingParameter] LoginModel login { get; set; }
+
+        protected override Task OnInitializedAsync()
+        {
+            //Console.WriteLine(login.IsLoggedIn);
+            return base.OnInitializedAsync();
+        }
+
+        private async void SetObsValue(int obsid, int val)
+        {
+            resp.Add(new ResponseModel { GrpId = obs.GrpId, ObsId = obsid, Response = val });
+            string id = "cmnt" + obs.GrpId + obsid;
+            await jsRuntime.InvokeAsync<object>("ToggleComment", id);
+            //await respChanged.InvokeAsync(resp);
+        }
+
+        private void SetObsComment(ChangeEventArgs e, int grpid, int obsid)
+        {
+            resp.Find(e => e.GrpId == grpid && e.ObsId == obsid).Comment = e.Value.ToString();
+        }
+
     }
-
-}

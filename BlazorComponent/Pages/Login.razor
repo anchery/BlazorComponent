@@ -1,33 +1,43 @@
 ﻿@page "/"
+@page "/login"
 
 
 @inject NavigationManager navigationManager
 @inject SqlDataAccess _db
+@inject AppState AppState
 
-<h3>Login</h3>
-<EditForm class="form-group" Model="@login" OnValidSubmit="LoginUser">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        Username:
-        <input type="text" @bind="@login.UserName" />
-    </div>
+<div class="container">
+    <h3>Login</h3>
 
-    <div class="form-group">
-        Password:
-        <input type="text" @bind="@login.Password" />
-    </div>
+    <EditForm class="form-group" Model="@login" OnValidSubmit="LoginUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            Username:
+            <input type="text" @bind="@login.UserName" class="form-control col-4" />
+        </div>
 
-    <div>
-        <button class="btn btn-primary">Log In</button>
-        <span class="text-danger">@loginErrorMessage</span>
-    </div>
-</EditForm>
+        <div class="form-group">
+            Password:
+            <input type="text" @bind="@login.Password" class="form-control col-4" />
+        </div>
+
+        <div>
+            <button class="btn btn-primary">Log In</button>
+            <div class="text-danger">@loginErrorMessage</div>
+        </div>
+    </EditForm>
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
 @code {
     string username = "";
     string password = "";
     string loginErrorMessage = "";
     LoginModel login = new LoginModel();
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
     protected void LoginUser()
     {
@@ -36,6 +46,8 @@
 
         if (_db.ValidateLogin(username, password))
         {
+            AppState.SetColour("Red");
+            login.IsLoggedIn = true;
             navigationManager.NavigateTo("/observation");
         }
         else
@@ -43,4 +55,5 @@
             loginErrorMessage = "Invalid username/password.";
         }
     }
+
 }
