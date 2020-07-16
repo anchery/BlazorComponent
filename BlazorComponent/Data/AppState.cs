@@ -7,13 +7,13 @@ namespace BlazorComponent.Data
 {
     public class AppState
     {
-        public string SelectedColour { get; private set; } = "blue";
+        public bool IsLoggedIn { get; private set; } = false;
 
         public event System.Action OnChange;
 
-        public void SetColour(string colour)
+        public void SetLoginStatus(bool loginStatus)
         {
-            SelectedColour = colour;
+            IsLoggedIn = loginStatus;
             NotifyStateChanged();
         }
 

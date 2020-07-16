@@ -19,7 +19,7 @@
 
         <div class="form-group">
             Password:
-            <input type="text" @bind="@login.Password" class="form-control col-4" />
+            <input type="password" @bind="@login.Password" class="form-control col-4" />
         </div>
 
         <div>
@@ -46,14 +46,19 @@
 
         if (_db.ValidateLogin(username, password))
         {
-            AppState.SetColour("Red");
-            login.IsLoggedIn = true;
+            AppState.SetLoginStatus(true);
             navigationManager.NavigateTo("/observation");
         }
         else
         {
             loginErrorMessage = "Invalid username/password.";
         }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        AppState.SetLoginStatus(false);
+        return base.OnInitializedAsync();
     }
 
 }

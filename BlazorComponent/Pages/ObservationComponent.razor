@@ -3,20 +3,18 @@
 @inject NavigationManager navigationManager
 @inject AppState AppState
 
-    @if (@AppState.SelectedColour == "blue")
+    @if (@AppState.IsLoggedIn == false)
     {
         try
         {
+            //TODO
+            //navigationManager.NavigateTo("/");
             navigationManager.NavigateTo(navigationManager.BaseUri.Replace("observation", "") + "login");
         }
         catch (Exception e)
         {
-
             Console.WriteLine(e.Message);
         }
-
-        //jsRuntime.InvokeAsync<object>(window.back());
-        //Console.WriteLine(navigationManager.Uri);
     }
     else
     {

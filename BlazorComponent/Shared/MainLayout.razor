@@ -1,28 +1,23 @@
 ﻿@inherits LayoutComponentBase
+@inject AppState AppState
 
-    <div class="sidebar">
-        @if (login != null)
-        {
-            @if (login.IsLoggedIn)
-            {
-                <NavMenu />
-            }
-        }
+<div class="sidebar">
 
+    @if (AppState.IsLoggedIn)
+    {
+        <NavMenu />
+    }
 
-    </div>
+</div>
 
 <div class="main">
-    <div class="top-row px-4">
+    @if (AppState.IsLoggedIn)
+    {
+        <div class="top-row px-4">
             <a href="/">Logout</a>
         </div>
-
+    }
     <div class="content px-4">
         @Body
     </div>
 </div>
-
-@code {
-    LoginModel login = new LoginModel();
-
-}
