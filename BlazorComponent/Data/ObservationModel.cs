@@ -20,6 +20,7 @@ namespace BlazorComponent.Data
         public int GrpId { get; set; }
         public string GrpText { get; set; }
         public List<ObservationModel> observations { get; set; }
+        public List<ResponseTypeModel> responseTypes { get; set; }
     }
     public class ResponseModel
     {
@@ -28,5 +29,9 @@ namespace BlazorComponent.Data
         public int Response { get; set; }
         public string Comment { get; set; }
     }
-
+    public class ResponseTypeModel
+    {
+        public int ResponseId { get; set; }
+        public string ResponseText { get; set; }
+    }
 }

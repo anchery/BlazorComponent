@@ -12,7 +12,8 @@ else
         <div class="form-group">
             @foreach (ObservationViewModel obs in ObsList)
             {
-                <ObservationComponent @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ObservationComponent>
+                //<ObservationComponent @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ObservationComponent>
+                <ComponentRB @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentRB>
             }
         </div>
         <div>
@@ -28,6 +29,12 @@ else
     public List<ObservationViewModel> ObsList = new List<ObservationViewModel>();
     private ObservationModel newObs = new ObservationModel();
     private List<ResponseModel> resp = new List<ResponseModel>();
+    private List<ResponseTypeModel> respType = new List<ResponseTypeModel>()
+    {
+        new ResponseTypeModel {ResponseId=0,ResponseText="1"},
+        new ResponseTypeModel {ResponseId=1,ResponseText="2"},
+                new ResponseTypeModel {ResponseId=2,ResponseText="3"}
+    };
 
     //Load meta_obs
     protected override async Task OnInitializedAsync()
@@ -43,6 +50,7 @@ else
                 ovm.GrpId = grp.GrpId;
                 ovm.GrpText = grp.GrpText;
                 ovm.observations = obsItems;
+                ovm.responseTypes = respType;
                 ObsList.Add(ovm);
             }
 
