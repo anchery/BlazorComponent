@@ -25,21 +25,21 @@ else
                 <div class="panel-body">
                     @foreach (ObservationModel o in obs.observations)
                     {
-                        string id="";
-                    <div>
-                        <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
-                        @foreach (ResponseTypeModel r in obs.responseTypes)
-                        {
-                            id = obs.GrpId + "" + o.ObsId + "" + r.ResponseText;
-                            //id += r.ResponseText;
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" id=@id name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId, @r.ResponseId))">
-                                <label class="custom-control-label" for=@id>@r.ResponseText</label>
-                            </div>
-                        }
+                        string id = "";
+                        <div>
+                            <label class="control-label col-sm-4" style="padding-top:0.5em;">@o.ObsText</label>
+                            @foreach (ResponseTypeModel r in obs.responseTypes)
+                            {
+                                id = obs.GrpId + "" + o.ObsId + "" + r.ResponseText;
+                                //id += r.ResponseText;
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id=@id name="radioGroup@(id)" @onclick="@(e => SetObsValue(@o.ObsId, @r.ResponseId))">
+                                    <label class="custom-control-label" for=@id>@r.ResponseText</label>
+                                </div>
+                            }
 
-                        <input type="text" class="form-control" disabled="disabled" id="cmnt@(obs.GrpId+""+o.ObsId)" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
-                    </div>
+                            <input type="text" class="form-control" disabled="disabled" id="cmnt@(obs.GrpId+""+o.ObsId)" placeholder="comments" @onchange="@(e=>SetObsComment(e,@obs.GrpId,@o.ObsId))" />
+                        </div>
                     }
                 </div>
             </div>

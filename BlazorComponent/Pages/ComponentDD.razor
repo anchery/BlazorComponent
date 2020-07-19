@@ -1,0 +1,60 @@
+﻿
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject AppState AppState
+
+@if (@AppState.IsLoggedIn == false)
+{
+    try
+    {
+        //TODO
+        //navigationManager.NavigateTo("/");
+        navigationManager.NavigateTo(navigationManager.BaseUri.Replace("observation", "") + "login");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
+}
+else
+{
+    <div class="container" Model="@items">
+        @items.First().Caption
+        <select class="form-control col-4" @onchange="DoStuff">
+
+            @foreach (DDComponentModel item in @items)
+            {
+                List<string> optItems = item.ddlItems.ToList();
+                foreach (string lstItem in optItems)
+                {
+                    <option value=@lstItem>@lstItem</option>
+                }
+
+            }
+        </select>
+    </div>
+}
+
+@code {
+
+    //input param
+    [Parameter]
+    public List<DDComponentModel> items { get; set; }
+
+    //output param
+    [Parameter]
+    public List<DDComponentModel> respDD1 { get; set; }
+
+    [Parameter]
+    public EventCallback<List<DDComponentModel>> respDD1Changed { get; set; }
+
+
+    void DoStuff(ChangeEventArgs e)
+    {
+        List<string> selectedString = new List<string>();
+        selectedString.Add(e.Value.ToString());
+        respDD1.Add(new DDComponentModel { ddlItems = selectedString });
+        Console.WriteLine("It is definitely: " + selectedString);
+    }
+
+}
