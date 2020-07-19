@@ -1,0 +1,37 @@
+﻿
+<div Model="@items">
+    @caption
+    <select class="form-control col-4" @onchange="OnSelectionChange">
+
+        @foreach (string item in @items)
+        {
+                <option value=@item>@item</option>
+        }
+    </select>
+</div>
+
+@code {
+
+    //input params
+    [Parameter]
+    public List<string> items { get; set; }
+
+    [Parameter]
+    public string caption { get; set; }
+
+    //output param
+    [Parameter]
+    public string respDD1 { get; set; }
+
+    [Parameter]
+    public EventCallback<string> respDD1Changed { get; set; }
+
+
+    protected async Task OnSelectionChange(ChangeEventArgs e)
+    {
+        respDD1 = e.Value.ToString();
+        await respDD1Changed.InvokeAsync(respDD1);
+        Console.WriteLine("It is definitely: " + respDD1);
+    }
+
+}

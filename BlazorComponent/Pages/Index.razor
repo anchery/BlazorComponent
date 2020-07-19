@@ -8,22 +8,23 @@
 }
 else
 {
-<EditForm class="form-group" Model="@newObs" OnValidSubmit="SaveData">
-    <div class="form-group">
-        <ComponentDD @bind-respDD1="respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems"></ComponentDD>
-    </div>
-    <div class="form-group">
-        @foreach (ObservationViewModel obs in ObsList)
-        {
-            //<ObservationComponent @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ObservationComponent>
-            <ComponentRB @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentRB>
-        }
-    </div>
+    <EditForm class="form-group" Model="@newObs" OnValidSubmit="SaveData">
+        <div class="form-group">
+            @*<ComponentDD @bind-respDD1="respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems"></ComponentDD>*@
+            <DDComponent @bind-respDD1="@respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems" caption="@caption"></DDComponent>
+        </div>
+        <div class="form-group">
+            @foreach (ObservationViewModel obs in ObsList)
+            {
+                //<ObservationComponent @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ObservationComponent>
+                <ComponentRB @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentRB>
+            }
+        </div>
 
-    <div>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </div>
-</EditForm>
+        <div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </EditForm>
 }
 
 
@@ -39,10 +40,16 @@ else
         new ResponseTypeModel {ResponseId=1,ResponseText="2"},
                 new ResponseTypeModel {ResponseId=2,ResponseText="3"}
     };
-    public List<DDComponentModel> respDD1 = new List<DDComponentModel>();
-    private List<DDComponentModel> ddlItems = new List<DDComponentModel>()
-{
-        new DDComponentModel {Caption="Location",ddlItems=new List<string>{"Location1","Location2","Location3"} }
+    //public List<DDComponentModel> respDD1 = new List<DDComponentModel>();
+    //private List<DDComponentModel> ddlItems = new List<DDComponentModel>()
+    public string respDD1=string.Empty;
+    public string caption = "Location";
+    private List<string> ddlItems = new List<string>()
+    {
+        "",
+        "Location1",
+        "Location2",
+        "Location3"
     };
 
     //Load meta_obs
