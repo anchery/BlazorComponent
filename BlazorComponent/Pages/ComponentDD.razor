@@ -1,39 +1,18 @@
-﻿
-@inject IJSRuntime jsRuntime
-@inject NavigationManager navigationManager
-@inject AppState AppState
+﻿<div class="container" Model="@items">
+    @items.First().Caption
+    <select class="form-control col-4" @onchange="DoStuff">
 
-@if (@AppState.IsLoggedIn == false)
-{
-    try
-    {
-        //TODO
-        //navigationManager.NavigateTo("/");
-        navigationManager.NavigateTo(navigationManager.BaseUri.Replace("observation", "") + "login");
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine(e.Message);
-    }
-}
-else
-{
-    <div class="container" Model="@items">
-        @items.First().Caption
-        <select class="form-control col-4" @onchange="DoStuff">
-
-            @foreach (DDComponentModel item in @items)
+        @foreach (DDComponentModel item in @items)
+        {
+            List<string> optItems = item.ddlItems.ToList();
+            foreach (string lstItem in optItems)
             {
-                List<string> optItems = item.ddlItems.ToList();
-                foreach (string lstItem in optItems)
-                {
-                    <option value=@lstItem>@lstItem</option>
-                }
-
+                <option value=@lstItem>@lstItem</option>
             }
-        </select>
-    </div>
-}
+
+        }
+    </select>
+</div>
 
 @code {
 

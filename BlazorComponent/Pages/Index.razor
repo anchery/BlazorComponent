@@ -1,87 +1,105 @@
 ﻿@page "/observation"
-
 @inject SqlDataAccess _db
+@inject NavigationManager navigationManager
+@inject AppState AppState
 
-@if (ObsGroups == null)
+@if (@AppState.IsLoggedIn == false)
 {
-    <p>Loading...</p>
+    try
+    {
+        //TODO
+        //navigationManager.NavigateTo("/");
+        navigationManager.NavigateTo(navigationManager.BaseUri.Replace("observation", "") + "login");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
 }
 else
 {
-    <EditForm class="form-group" Model="@newObs" OnValidSubmit="SaveData">
-        <div class="form-group">
-            @*<ComponentDD @bind-respDD1="respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems"></ComponentDD>*@
-            <DDComponent @bind-respDD1="@respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems" caption="@caption"></DDComponent>
-        </div>
-        <div class="form-group">
-            @foreach (ObservationViewModel obs in ObsList)
-            {
-                //<ObservationComponent @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ObservationComponent>
-                <ComponentRB @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentRB>
-            }
-        </div>
-
-        <div>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </div>
-    </EditForm>
-}
-
-
-@code {
-    private List<ObservationGroupModel> ObsGroups;
-    private List<ObservationModel> obsItems;
-    public List<ObservationViewModel> ObsList = new List<ObservationViewModel>();
-    private ObservationModel newObs = new ObservationModel();
-    private List<ResponseModel> resp = new List<ResponseModel>();
-    private List<ResponseTypeModel> respType = new List<ResponseTypeModel>()
-{
-        new ResponseTypeModel {ResponseId=0,ResponseText="1"},
-        new ResponseTypeModel {ResponseId=1,ResponseText="2"},
-                new ResponseTypeModel {ResponseId=2,ResponseText="3"}
-    };
-    //public List<DDComponentModel> respDD1 = new List<DDComponentModel>();
-    //private List<DDComponentModel> ddlItems = new List<DDComponentModel>()
-    public string respDD1=string.Empty;
-    public string caption = "Location";
-    private List<string> ddlItems = new List<string>()
+    @if (ObsGroups == null)
     {
-        "",
-        "Location1",
-        "Location2",
-        "Location3"
-    };
-
-    //Load meta_obs
-    protected override async Task OnInitializedAsync()
+        <p>Loading...</p>
+    }
+    else
     {
-        try
-        {
-            //Console.WriteLine(login.IsLoggedIn);
-            ObsGroups = await _db.GetObservationGroups("");
-            foreach (ObservationGroupModel grp in ObsGroups)
-            {
-                obsItems = await _db.GetObservations(grp.GrpId.ToString());
-                ObservationViewModel ovm = new ObservationViewModel();
-                ovm.GrpId = grp.GrpId;
-                ovm.GrpText = grp.GrpText;
-                ovm.observations = obsItems;
-                ovm.responseTypes = respType;
-                ObsList.Add(ovm);
-            }
+        <EditForm class="form-group" Model="@newObs" OnValidSubmit="SaveData">
+            <div class="form-group">
+                @*<ComponentDD @bind-respDD1="respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems"></ComponentDD>*@
+                <DDComponent @bind-respDD1="@respDD1" @bind-respDD1:event="respDD1Changed" items="@ddlItems" caption="@caption"></DDComponent>
+            </div>
+            <div class="form-group">
+                @foreach (ObservationViewModel obs in ObsList.Where(e=>e.GrpId==1))
+                {
+                    @*<ComponentOBSGroup @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentOBSGroup>*@
+                    <ComponentRB @bind-resp="resp" @bind-resp:event="respChanged" Obs="@obs"></ComponentRB>
+                }
+            </div>
 
-        }
-        catch (Exception e)
-        {
-            throw new Exception(e.Message);
-        }
+            <div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </EditForm>
     }
 
-    private void SaveData()
-    {
-        foreach (ResponseModel item in resp)
+
+    @code {
+        private List<ObservationGroupModel> ObsGroups;
+        private List<ObservationModel> obsItems;
+        public List<ObservationViewModel> ObsList = new List<ObservationViewModel>();
+        private ObservationModel newObs = new ObservationModel();
+        private List<ResponseModel> resp = new List<ResponseModel>();
+        private List<ResponseTypeModel> respType = new List<ResponseTypeModel>()
         {
-            Console.WriteLine(item.GrpId + "-" + item.ObsId + "-" + item.Response + "-" + item.Comment);
+            new ResponseTypeModel {ResponseId=1,ResponseText="1"},
+            new ResponseTypeModel {ResponseId=2,ResponseText="2"},
+            new ResponseTypeModel {ResponseId=3,ResponseText="3"},
+            new ResponseTypeModel {ResponseId=4,ResponseText="4"},
+            new ResponseTypeModel {ResponseId=5,ResponseText="5"}
+        };
+        //public List<DDComponentModel> respDD1 = new List<DDComponentModel>();
+        //private List<DDComponentModel> ddlItems = new List<DDComponentModel>()
+        public string respDD1 = string.Empty;
+        public string caption = "Location";
+        private List<string> ddlItems = new List<string>()
+        {
+            "",
+            "Location1",
+            "Location2",
+            "Location3"
+        };
+
+        //Load meta_obs
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                //Console.WriteLine(login.IsLoggedIn);
+                ObsGroups = await _db.GetObservationGroups("");
+                foreach (ObservationGroupModel grp in ObsGroups)
+                {
+                    obsItems = await _db.GetObservations(grp.GrpId.ToString());
+                    ObservationViewModel ovm = new ObservationViewModel();
+                    ovm.GrpId = grp.GrpId;
+                    ovm.GrpText = grp.GrpText;
+                    ovm.observations = obsItems;
+                    ovm.responseTypes = respType;
+                    ObsList.Add(ovm);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        private void SaveData()
+        {
+            foreach (ResponseModel item in resp)
+            {
+                Console.WriteLine(item.GrpId + "-" + item.ObsId + "-" + item.Response + "-" + item.Comment);
+            }
         }
     }
 }
